@@ -44,6 +44,8 @@ if __name__ == "__main__":
                 if event.key == pygame.K_RETURN:
                     val = board.get_value()
                     board.place_number(-val)
+                if event.key == pygame.K_BACKSPACE:
+                    board.place_number(0)
                 if event.key == pygame.K_UP:
                     curr_selected = board.selected
                     if curr_selected[0] != 0:
