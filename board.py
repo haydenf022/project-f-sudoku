@@ -19,26 +19,28 @@ class Board:
                 removed = 50
             case "test":
                 removed = 3
-        self.sudoku_generator = SudokuGenerator(9, removed)
-        self.sudoku_generator.board = sudoku_generator.generate_sudoku(9, removed)
-        self.immutable_cells = self.sudoku_generator.board
+        self.sudoku_generator_obj = SudokuGenerator(9, removed)
+        self.sudoku_generator_obj.board = sudoku_generator.generate_sudoku(9, removed)
+        self.board = self.sudoku_generator_obj.board
         self.cells = []
-        for row_index in range(len(self.immutable_cells)):
-            for column_index in range(len(self.immutable_cells[row_index])):
+        for row_index in range(len(self.board)):
+            for column_index in range(len(self.board[row_index])):
                 self.cells.append(
                     Cell(
                         self.screen,
-                        self.immutable_cells[row_index][column_index],
+                        self.board[row_index][column_index],
                         row_index,
                         column_index,
                     )
                 )
         self.selected = (0, 0)
+        self.all_correct = True
 
     def draw(self):
-
+        # uses the draw method in the cell class for all of the cells in the list
         [cell.draw() for cell in self.cells]
 
+        # next 2 for loops draw the lines for cell delimiters
         for i in range(10):
             pygame.draw.rect(
                 self.screen,
@@ -53,6 +55,7 @@ class Board:
                 pygame.Rect(i * 60 + 170, 80, 2, 540),
             )
 
+        # next 4 for loops draw the lines for box delimiters
         for i in range(1, 3):
             pygame.draw.rect(
                 self.screen,
@@ -67,9 +70,12 @@ class Board:
                 pygame.Rect(i * 180 + 170, 80, 5, 540),
             )
 
+        
     def select(self, row, col):
+        # initializes variables for selected cell
         prev_row = self.selected[0]
         prev_col = self.selected[1]
+        # redraws the black cell delimiters after a new cell is selected
         pygame.draw.rect(
             self.screen,
             (0, 0, 0),
@@ -90,9 +96,11 @@ class Board:
             (0, 0, 0),
             pygame.Rect(170 + prev_col * 60, 140 + prev_row * 60, 60, 2),
         )
+        # sets the selected attribute to the new cell
         self.selected = (row, col)
         new_row = self.selected[0]
         new_col = self.selected[1]
+        # draws the red delimiters around the new selected cell
         pygame.draw.rect(
             self.screen,
             (255, 0, 0),
@@ -115,34 +123,46 @@ class Board:
         )
 
     def place_number(self, value):
+        # initializes variables for selected cell
         selected_row = self.selected[0]
         selected_col = self.selected[1]
-        if self.immutable_cells[selected_row][selected_col] == 0:
+        # if the number being placed isn't valid, it makes sure the user will lose when submitting
+        if not self.sudoku_generator_obj.is_valid(selected_row, selected_col, value):
+            self.all_correct = False
+        # checks if the spot selected can be changed, if so, it adds the number to the arrays
+        if self.board[selected_row][selected_col] == 0:
             self.cells[selected_row * 9 + selected_col].set_cell_value(value)
-            self.sudoku_generator.board[selected_row][selected_col] = value
+            self.board[selected_row][selected_col] = value
+        # redraws board and selected cell
         self.draw()
         self.select(self.selected[0], self.selected[1])
+        
 
     def sketch_number(self, value):
+        # initializes variables for selected cell
         selected_row = self.selected[0]
         selected_col = self.selected[1]
-        if self.immutable_cells[selected_row][selected_col] == 0:
+        # checks if the spot selected can be changed, if so, it draws the sketch || negative value signifies sketch
+        if self.board[selected_row][selected_col] == 0:
             self.cells[selected_row * 9 + selected_col].set_cell_value(-value)
+        # redraws board and selected cell
         self.draw()
         self.select(self.selected[0], self.selected[1])
 
     def click(self, x, y):
-        # print(x, y)
+        # determines if the user clicked on one of the cells
         if x in range(170, 711):
             if y in range(80, 621):
-                # print((int((y - 80) / 60), int((x - 170) / 60)))
+                # returns the cell the user clicked on
                 return (int((y - 80) / 60), int((x - 170) / 60))
         return None
 
     def get_value(self):
+        # returns the value of the cell
         return self.cells[self.selected[0] * 9 + self.selected[1]].value
 
     def is_full(self):
+        # checks if the board is full
         ret = True
         for cell in self.cells:
             if cell.value <= 0:
@@ -150,34 +170,6 @@ class Board:
         return ret
 
     def check_win(self):
+        # determines if the user won or lost
         if self.is_full():
-            return is_valid_sudoku(self.sudoku_generator.board)
-
-
-def is_valid_sudoku(board):
-    for row in board:
-        if not is_valid_set(row):
-            return False
-    for col in range(9):
-        if not is_valid_set([board[row][col] for row in range(9)]):
-            return False
-
-    for row in range(0, 9, 3):
-        for col in range(0, 9, 3):
-            if not is_valid_set(
-                [board[r][c] for r in range(row, row + 3) for c in range(col, col + 3)]
-            ):
-                return False
-
-    return True
-
-
-def is_valid_set(nums):
-    seen = set()
-    for num in nums:
-        if num == 0:
-            continue
-        if num in seen or num < 1 or num > 9:
-            return False
-        seen.add(num)
-    return True
+            return self.all_correct

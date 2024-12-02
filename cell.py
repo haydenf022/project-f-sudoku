@@ -23,7 +23,6 @@ class Cell:
         self.value = -value
 
     # draws the cell on the screen
-    # currently just draws white square
     def draw(self):
         color = (255, 255, 255)
         pygame.draw.rect(
