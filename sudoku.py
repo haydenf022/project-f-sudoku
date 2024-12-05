@@ -1,58 +1,41 @@
 import pygame
 
-from cell import Cell
 from board import Board
-import sudoku_generator
+from constants import *
 
 if __name__ == "__main__":
 
     # creates a pygame screen
-    screen = pygame.display.set_mode((880, 880))
-    screen.fill((210, 231, 244))
-
-    # setting button constants for start screen
-    button1_h = 50
-    button1_w = 150
-    button1_y = 660
-    easy_x = 220 - 75
-    medium_x = 440 - 75
-    hard_x = 660 - 75
-
-    # setting button constants for game screen
-    button2_h = 50
-    button2_w = 150
-    button2_y = 715
-    reset_x = 220 - 75
-    restart_x = 440 - 75
-    exit_x = 660 - 75
+    screen = pygame.display.set_mode(SCREEN_SIZE)
+    screen.fill(BACKGROUND_COLOR)
 
     difficulty = None
     run = True
     selecting = True
-    font = pygame.font.Font(None, 50)
+    font = pygame.font.Font(None, SMALL_FONT_SIZE)
 
     while run:
         while selecting:
-            text1 = pygame.font.Font(None, 100).render("Welcome to Sudoku!", True, (0,0,0))
-            text_rect1 = text1.get_rect(center=(440, 220))
+            text1 = pygame.font.Font(None, LARGE_FONT_SIZE).render("Welcome to Sudoku!", True, BLACK)
+            text_rect1 = text1.get_rect(center=WELCOME_WIN_LOSE_TEXT_CENTER)
             screen.blit(text1, text_rect1)
-            text2 = pygame.font.Font(None, 75).render("Choose Your Difficulty:", True, (0, 0, 0))
-            text_rect2 = text2.get_rect(center=(440, 440))
+            text2 = pygame.font.Font(None, MEDIUM_FONT_SIZE).render("Choose Your Difficulty:", True, BLACK)
+            text_rect2 = text2.get_rect(center=DIFFICULTY_EXIT_TRY_AGAIN_TEXT_CENTER)
             screen.blit(text2, text_rect2)
             # drawing easy button
-            easy_rect = pygame.Rect(easy_x, button1_y, button1_w, button1_h)
-            pygame.draw.rect(screen, (0,255,0), easy_rect)
-            easy_text = font.render("Easy", True, (255,255,255))
+            easy_rect = pygame.Rect(DIFFICULTY_X[0], START_SCREEN_BUTTONS[2], START_SCREEN_BUTTONS[1], START_SCREEN_BUTTONS[0])
+            pygame.draw.rect(screen, GREEN, easy_rect)
+            easy_text = font.render("Easy", True, WHITE)
             screen.blit(easy_text, easy_text.get_rect(center=easy_rect.center))
             # drawing medium button
-            medium_rect = pygame.Rect(medium_x, button1_y, button1_w, button1_h)
-            pygame.draw.rect(screen, (0,0,255), medium_rect)
-            medium_text = font.render("Medium", True, (255,255,255))
+            medium_rect = pygame.Rect(DIFFICULTY_X[1], START_SCREEN_BUTTONS[2], START_SCREEN_BUTTONS[1], START_SCREEN_BUTTONS[0])
+            pygame.draw.rect(screen, BLUE, medium_rect)
+            medium_text = font.render("Medium", True, WHITE)
             screen.blit(medium_text, medium_text.get_rect(center=medium_rect.center))
             # drawing hard button
-            hard_rect = pygame.Rect(hard_x, button1_y, button1_w, button1_h)
-            pygame.draw.rect(screen, (255,0,0), hard_rect)
-            hard_text = font.render("Hard", True, (255,255,255))
+            hard_rect = pygame.Rect(DIFFICULTY_X[2], START_SCREEN_BUTTONS[2], START_SCREEN_BUTTONS[1], START_SCREEN_BUTTONS[0])
+            pygame.draw.rect(screen, RED, hard_rect)
+            hard_text = font.render("Hard", True, WHITE)
             screen.blit(hard_text, hard_text.get_rect(center=hard_rect.center))
             # making buttons clickable
             for event in pygame.event.get():
@@ -71,32 +54,32 @@ if __name__ == "__main__":
                     if hard_rect.left <= mouse_pos[0] <= hard_rect.right and hard_rect.top <= mouse_pos[1] <= hard_rect.bottom:
                         difficulty = "hard"
                     if difficulty != None:
-                        screen.fill((210, 231, 244))
+                        screen.fill(BACKGROUND_COLOR)
                         board = Board(9, 9, screen, difficulty)
                         board.draw()
                         board.select(0, 0)
                         selecting = False
             pygame.display.update()
         if board.is_full():
-            screen.fill((210, 231, 244))
+            screen.fill(BACKGROUND_COLOR)
             if board.check_win():
-                text1 = pygame.font.Font(None, 100).render("Game Won!", True, (0, 0, 0))
-                text_rect1 = text1.get_rect(center=(440, 220))
+                text1 = pygame.font.Font(None, LARGE_FONT_SIZE).render("Game Won!", True, BLACK)
+                text_rect1 = text1.get_rect(center=WELCOME_WIN_LOSE_TEXT_CENTER)
                 screen.blit(text1, text_rect1)
-                text2 = pygame.font.Font(None, 75).render("You May Exit The Game", True, (0, 0, 0))
-                text_rect2 = text2.get_rect(center=(440, 440))
+                text2 = pygame.font.Font(None, MEDIUM_FONT_SIZE).render("You May Exit The Game", True, BLACK)
+                text_rect2 = text2.get_rect(center=DIFFICULTY_EXIT_TRY_AGAIN_TEXT_CENTER)
                 screen.blit(text2, text_rect2)
-                result_text = pygame.font.Font(None, 50).render("Exit", True, (255, 255, 255))
+                result_text = pygame.font.Font(None, SMALL_FONT_SIZE).render("Exit", True, WHITE)
             else:
-                text1 = pygame.font.Font(None, 100).render("Game Over!", True, (0, 0, 0))
-                text_rect1 = text1.get_rect(center=(440, 220))
+                text1 = pygame.font.Font(None, LARGE_FONT_SIZE).render("Game Over!", True, BLACK)
+                text_rect1 = text1.get_rect(center=WELCOME_WIN_LOSE_TEXT_CENTER)
                 screen.blit(text1, text_rect1)
-                text2 = pygame.font.Font(None, 75).render("Try Again?", True, (0, 0, 0))
-                text_rect2 = text2.get_rect(center=(440, 440))
+                text2 = pygame.font.Font(None, MEDIUM_FONT_SIZE).render("Try Again?", True, BLACK)
+                text_rect2 = text2.get_rect(center=DIFFICULTY_EXIT_TRY_AGAIN_TEXT_CENTER)
                 screen.blit(text2, text_rect2)
-                result_text = pygame.font.Font(None, 50).render("Restart", True, (255, 255, 255))
-            result_rect = pygame.Rect(440-150, 660, 300, 100)
-            pygame.draw.rect(screen, (0,0,0), result_rect)
+                result_text = pygame.font.Font(None, SMALL_FONT_SIZE).render("Restart", True, WHITE)
+            result_rect = pygame.Rect(RESULT_LEFT, RESULT_TOP, RESULT_WIDTH, RESULT_HEIGHT)
+            pygame.draw.rect(screen, BLACK, result_rect)
             screen.blit(result_text, result_text.get_rect(center=result_rect.center))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -109,23 +92,23 @@ if __name__ == "__main__":
                             selecting = False
                             run = False
                         else:
-                            screen.fill((210, 231, 244))
+                            screen.fill(BACKGROUND_COLOR)
                             selecting = True
         else:
             # drawing reset button
-            reset_rect = pygame.Rect(reset_x, button2_y, button2_w, button2_h)
-            pygame.draw.rect(screen, (0,0,0), reset_rect)
-            reset_text = font.render("Reset", True, (255,255,255))
+            reset_rect = pygame.Rect(CONTROLS_X[0], GAME_SCREEN_BUTTONS[2], GAME_SCREEN_BUTTONS[1], GAME_SCREEN_BUTTONS[0])
+            pygame.draw.rect(screen, BLACK, reset_rect)
+            reset_text = font.render("Reset", True, WHITE)
             screen.blit(reset_text, reset_text.get_rect(center=reset_rect.center))
             # drawing restart button
-            restart_rect = pygame.Rect(restart_x, button2_y, button2_w, button2_h)
-            pygame.draw.rect(screen, (0,0,0), restart_rect)
-            restart_text = font.render("Restart", True, (255,255,255))
+            restart_rect = pygame.Rect(CONTROLS_X[1], GAME_SCREEN_BUTTONS[2], GAME_SCREEN_BUTTONS[1], GAME_SCREEN_BUTTONS[0])
+            pygame.draw.rect(screen, BLACK, restart_rect)
+            restart_text = font.render("Restart", True, WHITE)
             screen.blit(restart_text, restart_text.get_rect(center=restart_rect.center))
             # drawing exit button
-            exit_rect = pygame.Rect(exit_x, button2_y, button2_w, button2_h)
-            pygame.draw.rect(screen, (0,0,0), exit_rect)
-            exit_text = font.render("Exit", True, (255,255,255))
+            exit_rect = pygame.Rect(CONTROLS_X[2], GAME_SCREEN_BUTTONS[2], GAME_SCREEN_BUTTONS[1], GAME_SCREEN_BUTTONS[0])
+            pygame.draw.rect(screen, BLACK, exit_rect)
+            exit_text = font.render("Exit", True, WHITE)
             screen.blit(exit_text, exit_text.get_rect(center=exit_rect.center))
 
             for event in pygame.event.get():
@@ -183,7 +166,7 @@ if __name__ == "__main__":
                         board.reset_to_original()
                     # restart button
                     if restart_rect.left <= mouse_pos[0] <= restart_rect.right and restart_rect.top <= mouse_pos[1] <= restart_rect.bottom:
-                        screen.fill((210, 231, 244))
+                        screen.fill(BACKGROUND_COLOR)
                         selecting = True
                     # exit button
                     if exit_rect.left <= mouse_pos[0] <= exit_rect.right and exit_rect.top <= mouse_pos[1] <= exit_rect.bottom:

@@ -1,4 +1,5 @@
 import pygame
+from constants import *
 
 pygame.init()
 
@@ -11,8 +12,8 @@ class Cell:
         self.row = row
         self.col = col
         self.screen = screen
-        self.font = pygame.font.Font("freesansbold.ttf", 32)
-        self.sketched_font = pygame.font.Font("freesansbold.ttf", 16)
+        self.font = pygame.font.Font("freesansbold.ttf", FONT_SIZE)
+        self.sketched_font = pygame.font.Font("freesansbold.ttf", SKETCH_FONT_SIZE)
 
     # sets the value of the cell to the value passed
     def set_cell_value(self, value):
@@ -24,31 +25,16 @@ class Cell:
 
     # draws the cell on the screen
     def draw(self):
-        color = (255, 255, 255)
-        pygame.draw.rect(
-            self.screen,
-            color,
-            pygame.Rect(self.col * 60 + 170, self.row * 60 + 80, 60, 60),
-        )
+        pygame.draw.rect(self.screen, WHITE, pygame.Rect(self.col * CELL_SIZE + BOARD_LEFT, self.row * CELL_SIZE + BOARD_TOP, CELL_SIZE, CELL_SIZE))
         if self.value > 0:
-            text = self.font.render(
-                str(self.value),
-                True,
-                (0, 0, 0),
-                (255, 255, 255),
-            )
+            text = self.font.render(str(self.value), True, BLACK, WHITE)
             textRect = text.get_rect()
-            textRect.center = (self.col * 60 + 200, self.row * 60 + 110)
+            textRect.center = (self.col * CELL_SIZE + BOARD_LEFT + OFFSET_FOR_TEXT, self.row * CELL_SIZE + BOARD_TOP + OFFSET_FOR_TEXT)
             self.screen.blit(text, textRect)
         elif self.value == 0:
             pass
         else:
-            text = self.sketched_font.render(
-                str(-self.value),
-                True,
-                (0, 0, 0),
-                (255, 255, 255),
-            )
+            text = self.sketched_font.render(str(-self.value), True, BLACK, WHITE)
             textRect = text.get_rect()
-            textRect.center = (self.col * 60 + 185, self.row * 60 + 95)
+            textRect.center = (self.col * CELL_SIZE + BOARD_LEFT + OFFSET_FOR_SKETCH_TEXT, self.row * CELL_SIZE + BOARD_TOP + OFFSET_FOR_SKETCH_TEXT)
             self.screen.blit(text, textRect)
