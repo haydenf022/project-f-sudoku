@@ -23,6 +23,7 @@ class Board:
         self.sudoku_generator_obj.board = sudoku_generator.generate_sudoku(9, removed)
         self.board = self.sudoku_generator_obj.board
         self.cells = []
+        self.original_board = [row[:] for row in self.sudoku_generator_obj.board]
         for row_index in range(len(self.board)):
             for column_index in range(len(self.board[row_index])):
                 self.cells.append(
@@ -127,7 +128,7 @@ class Board:
         selected_row = self.selected[0]
         selected_col = self.selected[1]
         # if the number being placed isn't valid, it makes sure the user will lose when submitting
-        if not self.sudoku_generator_obj.is_valid(selected_row, selected_col, value):
+        if not self.sudoku_generator_obj.is_valid(selected_row, selected_col, value) and value != 0:
             self.all_correct = False
         # checks if the spot selected can be changed, if so, it adds the number to the arrays
         if self.board[selected_row][selected_col] == 0:
@@ -173,3 +174,11 @@ class Board:
         # determines if the user won or lost
         if self.is_full():
             return self.all_correct
+
+    def reset_to_original(self):
+        self.board = [row[:] for row in self.original_board]
+        for row_index in range(len(self.board)):
+            for col_index in range(len(self.board[row_index])):
+                value = self.board[row_index][col_index]
+                self.cells[row_index * 9 + col_index].set_cell_value(value)
+        self.draw()
