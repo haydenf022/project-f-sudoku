@@ -1,5 +1,4 @@
 import pygame
-from matplotlib.backend_bases import button_press_handler
 
 from cell import Cell
 from board import Board
