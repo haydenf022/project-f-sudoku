@@ -59,6 +59,7 @@ if __name__ == "__main__":
                         board.draw()
                         board.select(0, 0)
                         selecting = False
+                        difficulty = None
             pygame.display.update()
         if board.is_full():
             screen.fill(BACKGROUND_COLOR)
