@@ -61,8 +61,10 @@ if __name__ == "__main__":
                         selecting = False
                         difficulty = None
             pygame.display.update()
+        # checking if any results screen should be displayed
         if board.is_full():
             screen.fill(BACKGROUND_COLOR)
+            # displaying the win screen
             if board.check_win():
                 text1 = pygame.font.Font(None, LARGE_FONT_SIZE).render("Game Won!", True, BLACK)
                 text_rect1 = text1.get_rect(center=WELCOME_WIN_LOSE_TEXT_CENTER)
@@ -71,6 +73,7 @@ if __name__ == "__main__":
                 text_rect2 = text2.get_rect(center=DIFFICULTY_EXIT_TRY_AGAIN_TEXT_CENTER)
                 screen.blit(text2, text_rect2)
                 result_text = pygame.font.Font(None, SMALL_FONT_SIZE).render("Exit", True, WHITE)
+            # displaying the loss screen
             else:
                 text1 = pygame.font.Font(None, LARGE_FONT_SIZE).render("Game Over!", True, BLACK)
                 text_rect1 = text1.get_rect(center=WELCOME_WIN_LOSE_TEXT_CENTER)
@@ -112,6 +115,7 @@ if __name__ == "__main__":
             exit_text = font.render("Exit", True, WHITE)
             screen.blit(exit_text, exit_text.get_rect(center=exit_rect.center))
 
+            # adding events for each acceptable key press
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
